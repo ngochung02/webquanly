@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quản lý sản phẩm</title>
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    table, th, td {
+        border: 1px solid black;
+        padding: 6px;
+        text-align: center;
+    }
+    h2 {
+        padding: 10px;
+        text-align: center;
+    }
+</style>
+</head>
+<body>
+
+<h2>Quản lý sản phẩm</h2>
+
+<div id="productList">
+    <h3>Danh sách sản phẩm</h3>
+    <table id="productTable">
+        <tr>
+            <th>STT</th>
+            <th>Tên sản phẩm</th>
+            <th>Giá</th>
+            <th>Màu sắc</th>
+            <th></th>
+        </tr>
+    </table>
+</div>
+
+<div id="addProduct">
+    <h3>Thêm sản phẩm mới</h3>
+    <input type="text" id="productName" placeholder="Nhập tên sản phẩm">
+    <input type="number" id="productPrice" placeholder="Nhập giá sản phẩm">
+    <input type="text" id="productColor" placeholder="Nhập màu sắc sản phẩm">
+    <button onclick="addProduct()">Thêm</button>
+</div>
+
+<div id="editProduct" style="display:none;">
+    <h3>Sửa tên, giá và màu sắc sản phẩm</h3>
+    <input type="text" id="editedProductName">
+    <input type="number" id="editedProductPrice">
+    <input type="text" id="editedProductColor">
+    <button onclick="editProduct()">Sửa</button>
+</div>
+
+<script>
+    let products = []; // Mảng chứa danh sách sản phẩm
+
+    // Hàm hiển thị danh sách sản phẩm
+    function displayProducts() {
+        let table = document.getElementById("productTable");
+        table.innerHTML = "<tr><th>STT</th><th>Tên sản phẩm</th><th>Giá</th><th>Màu sắc</th><th></th></tr>";
+
+        for (let i = 0; i < products.length; i++) {
+            let row = `<tr>
+                <td>${i+1}</td>
+                <td onclick="showEditForm(${i})">${products[i].name}</td>
+                <td>${products[i].price}</td>
+                <td>${products[i].color}</td>
+                <td><button onclick="deleteProduct(${i})">Xoá</button></td>
+            </tr>`;
+            table.innerHTML += row;
+        }
+    }
+
+    // Hàm thêm sản phẩm vào danh sách
+    function addProduct() {
+        let productName = document.getElementById("productName").value;
+        let productPrice = document.getElementById("productPrice").value;
+        let productColor = document.getElementById("productColor").value;
+        if (productName.trim() !== "" && productPrice !== "") {
+            let product = {
+                name: productName,
+                price: productPrice,
+                color: productColor
+            };
+            products.push(product);
+            displayProducts();
+            document.getElementById("productName").value = ""; // Reset input
+            document.getElementById("productPrice").value = ""; // Reset input
+            document.getElementById("productColor").value = ""; // Reset input
+
+        } else {
+            alert("Vui lòng nhập tên và giá sản phẩm!");
+        }
+    }
+
+    // Hàm hiển thị form chỉnh sửa sản phẩm
+    function showEditForm(index) {
+        document.getElementById("editProduct").style.display = "block";
+        document.getElementById("editedProductName").value = products[index].name;
+        document.getElementById("editedProductPrice").value = products[index].price;
+        document.getElementById("editedProductColor").value = products[index].color;
+        document.getElementById("editedProductName").setAttribute("data-index", index);
+    }
+
+    // Hàm sửa sản phẩm
+    function editProduct() {
+        let editedProductName = document.getElementById("editedProductName").value;
+        let editedProductPrice = document.getElementById("editedProductPrice").value;
+        let editedProductColor = document.getElementById("editedProductColor").value;
+        let index = document.getElementById("editedProductName").getAttribute("data-index");
+        products[index].name = editedProductName;
+        products[index].price = editedProductPrice;
+        products[index].color = editedProductColor;
+        displayProducts();
+        document.getElementById("editProduct").style.display = "none";
+    }
+
+    // Hàm xoá sản phẩm
+    function deleteProduct(index) {
+        products.splice(index, 1);
+        displayProducts();
+    }
+
+    // Gọi hàm hiển thị danh sách sản phẩm khi trang được tải
+    displayProducts();
+</script>
+
+</body>
+</html>
